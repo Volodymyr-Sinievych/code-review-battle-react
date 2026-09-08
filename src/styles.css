@@ -1,0 +1,32 @@
+:root {
+  color: #e5e7eb;
+  background: #090e1a;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input { font: inherit; }
+
+.app-shell { width: min(720px, calc(100% - 32px)); margin: 64px auto; }
+.eyebrow { color: #818cf8; font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+h1 { margin: 4px 0 8px; font-size: clamp(32px, 6vw, 52px); letter-spacing: -.04em; }
+.lede { color: #94a3b8; margin: 0 0 32px; }
+.search-form { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-top: 32px; }
+.search-input { width: 100%; border: 1px solid #334155; border-radius: 12px; padding: 13px 16px; color: #f8fafc; background: #111827; outline: none; }
+.search-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgb(129 140 248 / .18); }
+.primary-button, .more-button { border: 0; border-radius: 12px; padding: 12px 18px; color: white; background: #4f46e5; cursor: pointer; font-weight: 700; }
+.primary-button:disabled, .more-button:disabled { cursor: not-allowed; opacity: .45; }
+.status { min-height: 24px; margin: 18px 0 8px; color: #94a3b8; }
+.error { color: #fca5a5; }
+.results { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.user-row { display: grid; grid-template-columns: 48px 1fr; gap: 14px; align-items: center; border: 1px solid #1e293b; border-radius: 14px; padding: 14px; background: #111827; cursor: pointer; }
+.user-row:hover { border-color: #475569; background: #172033; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.user-name { margin: 0 0 3px; color: #f8fafc; font-size: 16px; }
+.user-meta { margin: 0; color: #94a3b8; font-size: 13px; }
+.highlight { border-radius: 3px; color: #fef3c7; background: #92400e; }
+.more-button { display: block; margin: 18px auto 0; background: #334155; }
+.empty { border: 1px dashed #334155; border-radius: 14px; padding: 28px; color: #94a3b8; text-align: center; }
