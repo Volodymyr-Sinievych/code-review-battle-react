@@ -1,12 +1,19 @@
 import type { SearchUsersResponse, User } from '../api/users'
 
-const FIRST_NAMES = ['Ірина', 'Андрій', 'Олена', 'Ігор', 'Софія', 'Тарас']
+const FIRST_NAMES = [
+  { name: 'Ірина', portraitGroup: 'women' },
+  { name: 'Андрій', portraitGroup: 'men' },
+  { name: 'Олена', portraitGroup: 'women' },
+  { name: 'Ігор', portraitGroup: 'men' },
+  { name: 'Софія', portraitGroup: 'women' },
+  { name: 'Тарас', portraitGroup: 'men' },
+] as const
 const LAST_NAMES = ['Коваль', 'Шевченко', 'Бондар', 'Мельник', 'Ткаченко', 'Кравець']
 const ROLES = ['Frontend Engineer', 'Product Designer', 'QA Engineer', 'Product Manager']
 const PAGE_SIZE = 8
 
 export const userDirectory: User[] = Array.from({ length: 36 }, (_, index) => {
-  const firstName = FIRST_NAMES[index % FIRST_NAMES.length]
+  const { name: firstName, portraitGroup } = FIRST_NAMES[index % FIRST_NAMES.length]
   const lastName = LAST_NAMES[Math.floor(index / FIRST_NAMES.length)]
   const slug = `${firstName}.${lastName}`.toLowerCase()
 
@@ -15,7 +22,7 @@ export const userDirectory: User[] = Array.from({ length: 36 }, (_, index) => {
     name: `${firstName} ${lastName}`,
     email: `${slug}@example.com`,
     role: ROLES[index % ROLES.length],
-    avatarUrl: `https://i.pravatar.cc/96?u=${index + 1}`,
+    avatarUrl: `https://randomuser.me/api/portraits/${portraitGroup}/${index + 10}.jpg`,
   }
 })
 

@@ -29,6 +29,14 @@ describe('searchUsers', () => {
     expect(result.items[0]).toMatchObject({ name: 'Ірина Коваль' })
   })
 
+  it('повертає жіночі та чоловічі портрети відповідно до імен', async () => {
+    const women = await searchUsers({ query: 'Софія', page: 1 })
+    const men = await searchUsers({ query: 'Ігор', page: 1 })
+
+    expect(women.items.every(({ avatarUrl }) => avatarUrl.includes('/women/'))).toBe(true)
+    expect(men.items.every(({ avatarUrl }) => avatarUrl.includes('/men/'))).toBe(true)
+  })
+
   it('повертає повідомлення mock backend для помилки', async () => {
     await expect(searchUsers({ query: 'помилка', page: 1 })).rejects.toThrow(
       'Сервіс пошуку тимчасово недоступний',
