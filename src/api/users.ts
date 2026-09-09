@@ -20,38 +20,8 @@ export interface SearchUsersResponse {
   hasMore: boolean
 }
 
-const FIRST_NAMES = ['Ірина', 'Андрій', 'Олена', 'Ігор', 'Софія', 'Тарас']
-const LAST_NAMES = ['Коваль', 'Шевченко', 'Бондар', 'Мельник', 'Ткаченко', 'Кравець']
-const ROLES = ['Frontend Engineer', 'Product Designer', 'QA Engineer', 'Product Manager']
-const PAGE_SIZE = 8
-
-const users: User[] = Array.from({ length: 36 }, (_, index) => {
-  const firstName = FIRST_NAMES[index % FIRST_NAMES.length]
-  const lastName = LAST_NAMES[Math.floor(index / FIRST_NAMES.length)]
-  const slug = `${firstName}.${lastName}`.toLowerCase()
-
-  return {
-    id: `user-${index + 1}`,
-    name: `${firstName} ${lastName}`,
-    email: `${slug}@example.com`,
-    role: ROLES[index % ROLES.length],
-    avatarUrl: `https://i.pravatar.cc/96?u=${index + 1}`,
-  }
-})
-
-function wait(milliseconds: number, signal?: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timeoutId = window.setTimeout(resolve, milliseconds)
-
-    signal?.addEventListener(
-      'abort',
-      () => {
-        window.clearTimeout(timeoutId)
-        reject(new DOMException('Запит скасовано', 'AbortError'))
-      },
-      { once: true },
-    )
-  })
+interface ApiError {
+  message?: string
 }
 
 export async function searchUsers({
@@ -59,28 +29,20 @@ export async function searchUsers({
   page,
   signal,
 }: SearchUsersParams): Promise<SearchUsersResponse> {
-  const normalizedQuery = query.trim().toLocaleLowerCase('uk')
-  const latency = Math.max(180, 900 - normalizedQuery.length * 120)
+  const origin = typeof window === 'undefined' ? 'http://localhost' : window.location.origin
+  const url = new URL(`${import.meta.env.BASE_URL}api/users`, origin)
+  url.searchParams.set('query', query)
+  url.searchParams.set('page', String(page))
 
-  await wait(latency, signal)
+  const response = await fetch(url, {
+    headers: { Accept: 'application/json' },
+    signal,
+  })
 
-  if (normalizedQuery === 'помилка') {
-    throw new Error('Сервіс пошуку тимчасово недоступний')
+  if (!response.ok) {
+    const error = (await response.json().catch(() => ({}))) as ApiError
+    throw new Error(error.message ?? `API повернуло статус ${response.status}`)
   }
 
-  const matches = users.filter((user) =>
-    [user.name, user.email, user.role].some((value) =>
-      value.toLocaleLowerCase('uk').includes(normalizedQuery),
-    ),
-  )
-  const start = (page - 1) * PAGE_SIZE
-  const items = matches.slice(start, start + PAGE_SIZE)
-
-  return {
-    items,
-    page,
-    pageSize: PAGE_SIZE,
-    total: matches.length,
-    hasMore: start + PAGE_SIZE < matches.length,
-  }
+  return (await response.json()) as SearchUsersResponse
 }
